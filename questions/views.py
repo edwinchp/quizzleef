@@ -1,41 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Question
+from django.views import generic
 from .forms import QuestionForm
 
-def question_list(request):
-    questions = Question.objects.all()
-    return render(request, 'questions/question_list.html', {'questions': questions})
+class QuestionViewForm(generic.FormView):
+    form_class = QuestionForm
+    template_name = 'questions/add_question.html'
 
-def question_detail(request, pk):
-    question = get_object_or_404(Question, pk=pk)
-    return render(request, 'questions/question_detail.html', {'question': question})
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
-@login_required
-def question_new(request):
-    if request.method == "POST":
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            question = form.save()
-            return redirect('question_detail', pk=question.pk)
-    else:
-        form = QuestionForm()
-    return render(request, 'questions/question_edit.html', {'form': form})
-
-@login_required
-def question_edit(request, pk):
-    question = get_object_or_404(Question, pk=pk)
-    if request.method == "POST":
-        form = QuestionForm(request.POST, instance=question)
-        if form.is_valid():
-            question = form.save()
-            return redirect('question_detail', pk=question.pk)
-    else:
-        form = QuestionForm(instance=question)
-    return render(request, 'questions/question_edit.html', {'form': form})
-
-@login_required
-def question_delete(request, pk):
-    question = get_object_or_404(Question, pk=pk)
-    question.delete()
-    return redirect('question_list')
