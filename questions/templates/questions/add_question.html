@@ -1,1 +1,6 @@
 Aquí se verá el formulario para añadir una pregunta.
+<form action="{% url 'questions:add_question' %}" method="post">
+{{% csrf_token %}}
+{{ form.as_p }}
+<input type="submit" value="Add question" />
+</form>
