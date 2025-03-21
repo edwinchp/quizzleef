@@ -2,7 +2,7 @@ from django.db import models
 
 class Question(models.Model):
     messages = models.TextField(help_text="Enter message.")
-    photos = models.CharField(max_length=255, blank=True, null=True)
+    photo = models.FileField(null=True, upload_to='questions/pictures')
     question_text = models.TextField(help_text="Enter question text.")
     options = models.TextField(help_text="Enter options separated by newlines.")
     answer = models.CharField(max_length=1)

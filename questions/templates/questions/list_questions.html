@@ -20,7 +20,10 @@
             <tr>
               <td class="px-4 py-2 font-medium whitespace-nowrap text-gray-900">{{ question.question_text }}</td>
               <td class="px-4 py-2 whitespace-nowrap text-gray-700">{{ question.answer }}</td>
-            </tr>
+              <td class="px-4 py-2 whitespace-nowrap text-gray-700">
+                <img src="/media/{{ question.photo }}" alt="Picture of" class="w-16 h-16 object-cover rounded-md">
+              </td>            
+          </tr>
           {% endfor %}
         </tbody>
       </table>
