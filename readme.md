@@ -10,3 +10,9 @@ A simple Django-based Question Manager application created as part of my Python/
 - (Future) Docker integration
 - (Future) Take the questions in exam mode
 - (Future) AI Integration analizing score and as a study buddy
+
+## Installation
+- Define environment variables
+- pip install -r requirements.txt
+- pip install -r requirements-dev.txt
+- python manage.py runserver
