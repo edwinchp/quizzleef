@@ -13,6 +13,22 @@ A simple Django-based Question Manager application created as part of my Python/
 
 ## Installation
 - Define environment variables
-- pip install -r requirements.txt
-- pip install -r requirements-dev.txt
-- python manage.py runserver
+```bash
+cp .env_example .env
+```
+Install requirements
+```bash
+pip install -r requirements.txt
+```
+```bash
+pip install -r requirements-dev.txt
+```
+Run app
+```bash
+python manage.py runserver
+```
+
+## Docker Image
+```bash
+docker compose -f 'docker-compose.yml' up -d --build 'web' 
+```
