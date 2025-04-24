@@ -5,7 +5,7 @@ from questions.models import Question, Option
 
 class OptionInline(admin.TabularInline):  
     model = Option  
-    extra = 2  # Número de opciones vacías al crear una pregunta
+    extra = 2
 
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
