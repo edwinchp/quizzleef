@@ -12,19 +12,30 @@ pipeline {
     stages {
         stage('Install dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Migrations') {
             steps {
-                sh 'python manage.py migrate'
+                sh '''
+                    . venv/bin/activate
+                    python manage.py migrate
+                '''
             }
         }
 
         stage('Run Server') {
             steps {
-                sh 'python manage.py runserver 0.0.0.0:8000'
+                ssh '''
+                    . venv/bin/activate
+                    python manage.py runserver 0.0.0.0:8000
+                '''
             }
         }
     }
