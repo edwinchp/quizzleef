@@ -7,6 +7,7 @@ pipeline {
         DB_PASSWORD = credentials('django-db-password')
         DB_HOST = credentials('django-db-host')
         DB_PORT = credentials('django-db-port')
+        DJANGO_ALLOWED_HOSTS = credentials('django-allowed-hosts')
     }
 
     stages {
