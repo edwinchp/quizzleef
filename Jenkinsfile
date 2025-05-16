@@ -35,7 +35,7 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    python manage.py runserver 0.0.0.0:8002
+                    nohup python manage.py runserver 0.0.0.0:8002 &
                 '''
             }
         }
