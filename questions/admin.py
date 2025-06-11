@@ -1,5 +1,5 @@
 from django.contrib import admin
-from questions.models import Question, Option, Message
+from questions.models import Question, Option, Message, Category
 
 # Register your models here.
 
@@ -17,6 +17,10 @@ class QuestionAdmin(admin.ModelAdmin):
     search_fields =  ['question_text']
     inlines = [OptionInline, MessageInline]
 
+class CategoryAdmin(admin.ModelAdmin):
+    model = Category
+
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Option)
 admin.site.register(Message)
+admin.site.register(Category, CategoryAdmin)
