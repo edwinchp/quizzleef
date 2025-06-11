@@ -12,10 +12,18 @@ A simple Django-based Question Manager application created as part of my Python/
 - (Future) AI Integration analizing score and as a study buddy
 
 ## Installation
-- Define environment variables
+Define environment variables
 ```bash
 cp .env_example .env
 ```
+
+Replace .env with your information
+
+Set environment variables (not recommended for Production)
+```bash
+export $(grep -v '^#' .env | xargs)
+```
+
 Install requirements
 ```bash
 pip install -r requirements.txt
