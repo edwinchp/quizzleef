@@ -3,6 +3,7 @@ from questions.models import Question, Option, Message, Category
 
 # Register your models here.
 
+
 class OptionInline(admin.TabularInline):  
     model = Option  
     extra = 0
@@ -14,6 +15,7 @@ class MessageInline(admin.TabularInline):
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
     list_display =  ['question_text']
+    list_filter = ['category']
     search_fields =  ['question_text']
     inlines = [OptionInline, MessageInline]
 
