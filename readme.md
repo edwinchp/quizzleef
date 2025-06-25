@@ -31,6 +31,17 @@ pip install -r requirements.txt
 ```bash
 pip install -r requirements-dev.txt
 ```
+
+Run Migrations
+```bash
+python manage.py migrate
+```
+
+Create admin superuser
+```bash
+python manage.py createsuperuser
+```
+
 Run app
 ```bash
 python manage.py runserver
