@@ -13,8 +13,9 @@ class MessageInline(admin.TabularInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
-    list_display =  ['question_text']
-    search_fields =  ['question_text']
+    list_display =  ['question_text', 'category', 'dificulty']
+    search_fields =  ['question_text', 'category']
+    list_filter = ['category', 'dificulty']
     inlines = [OptionInline, MessageInline]
 
 admin.site.register(Question, QuestionAdmin)
