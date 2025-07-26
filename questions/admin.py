@@ -6,15 +6,13 @@ from questions.models import Question, Option, Message, Category
 
 class OptionInline(admin.TabularInline):  
     model = Option  
-    extra = 0
+    extra = 1
     classes = ('collapse',)
-    show_change_link = True
 
 class MessageInline(admin.TabularInline):
     model = Message
-    extra = 2
+    extra = 1
     classes = ('collapse',)
-    show_change_link = True
 
 class QuestionAdmin(admin.ModelAdmin):
     model = Question

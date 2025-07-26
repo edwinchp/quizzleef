@@ -7,4 +7,4 @@ class QuestionsConfig(AppConfig):
 
     def ready(self):
         # Import and register the signals
-        import questions.signals  # noqa
+        import questions.signals
