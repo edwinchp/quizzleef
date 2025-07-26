@@ -23,6 +23,3 @@ class CategoryAdmin(admin.ModelAdmin):
     model = Category
 
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Option)
-admin.site.register(Message)
-admin.site.register(Category, CategoryAdmin)
