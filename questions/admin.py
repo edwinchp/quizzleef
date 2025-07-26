@@ -7,10 +7,14 @@ from questions.models import Question, Option, Message, Category
 class OptionInline(admin.TabularInline):  
     model = Option  
     extra = 0
+    classes = ('collapse',)
+    show_change_link = True
 
 class MessageInline(admin.TabularInline):
     model = Message
     extra = 2
+    classes = ('collapse',)
+    show_change_link = True
 
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
@@ -23,3 +27,4 @@ class CategoryAdmin(admin.ModelAdmin):
     model = Category
 
 admin.site.register(Question, QuestionAdmin)
+admin.site.register(Category, CategoryAdmin)

@@ -8,17 +8,7 @@ class Category(models.Model):
 
 
 class Question(models.Model):
-    CATEGORY_CHOICES = [
-        ('general', 'General Knowledge'),
-        ('science', 'Science'),
-        ('history', 'History'),
-        ('geography', 'Geography'),
-        ('entertainment', 'Entertainment'),
-        ('sports', 'Sports'),
-        ('technology', 'Technology'),
-        ('other', 'Other'),
-    ]
-    
+        
     question_text = models.TextField(max_length=300, help_text="Max characters: 300")
     short_explanation = models.TextField(max_length=200, blank=True, null=True, help_text="Max characters: 200")
     photo = models.FileField(null=True, upload_to='questions/pictures', blank=True)
@@ -26,7 +16,7 @@ class Question(models.Model):
     photo_spoiler = models.BooleanField(blank=True, default=False, choices=[(True, 'Yes'), (False, 'No')], help_text="Spoiler text for the photo")
     difficulty = models.CharField(max_length=10, choices=[('easy', 'Easy'), ('medium', 'Medium'), ('hard', 'Hard')], default='easy', help_text="Select difficulty level")
     hint = models.TextField(blank=True, null=True, help_text="Hint for the question")
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.question_text
