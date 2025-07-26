@@ -33,7 +33,7 @@ class Question(models.Model):
 
 
 class Option(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.DO_NOTHING, related_name="options")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="options")
     option_text = models.TextField(max_length=100, help_text="Max characters: 100")
     is_correct = models.BooleanField(null=True, max_length=1, choices=[(True, 'Yes'), (False, 'No')], default=False, help_text="Is this option correct?")
 
@@ -42,7 +42,7 @@ class Option(models.Model):
 
 
 class Message(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.DO_NOTHING, related_name="messages")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="messages")
     message_text = models.TextField(max_length=500, help_text="Max characters: 500")
 
     def __str__(self):
