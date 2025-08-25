@@ -34,7 +34,7 @@ def get_random_question(request):
         )
     
     # Validate difficulty
-    valid_difficulties = ['easy', 'medium', 'hard']
+    valid_difficulties = ['easy', 'medium', 'hard', 'any']
     if difficulty not in valid_difficulties:
         return Response(
             {'error': f'Invalid difficulty. Must be one of: {valid_difficulties}'},
@@ -42,11 +42,15 @@ def get_random_question(request):
         )
     
     try:
-        # Get questions filtered by category name and difficulty
-        questions = Question.objects.filter(
-            category__name__iexact=category_name,
-            difficulty=difficulty
-        )
+        if difficulty == 'any':
+            questions = Question.objects.filter(
+                category__name__iexact=category_name
+            )
+        else:
+            questions = Question.objects.filter(
+                category__name__iexact=category_name,
+                difficulty=difficulty
+            )
         
         if not questions.exists():
             return Response(
@@ -54,7 +58,6 @@ def get_random_question(request):
                 status=404
             )
             
-        # Select a random question from the filtered queryset
         question = random.choice(questions)
         serializer = QuestionSerializer(question)
         return Response(serializer.data)

@@ -24,6 +24,18 @@ Set environment variables (not recommended for Production)
 export $(grep -v '^#' .env | xargs)
 ```
 
+
+Create a virtual environment (only needed once):
+```bash
+   # Windows
+   python -m venv venv
+   .\venv\Scripts\activate
+   
+   # On macOS/Linux
+   python -m venv venv
+   source venv/bin/activate
+```
+
 Install requirements
 ```bash
 pip install -r requirements.txt

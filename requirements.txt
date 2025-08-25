@@ -1,5 +1,5 @@
-Django==5.1.6
-psycopg2-binary==2.9.10
+Django
+psycopg2-binary
 djangorestframework
 gunicorn
 psycopg2-binary
