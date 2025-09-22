@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from quizzleef.serializers import QuestionSerializer
 from .services import (
     get_question_by_id_service,
-    get_random_question_service,
+    get_random_questions_service,
     VALID_DIFFICULTIES,
 )
 from questions.models import Question
@@ -26,6 +26,7 @@ def get_question_by_id(request, pk):
 def get_random_question(request):
     category_name = request.query_params.get("category")
     difficulty = request.query_params.get("difficulty")
+    count = request.query_params.get("count") or 1
 
     if not all([category_name, difficulty]):
         return Response(
@@ -36,7 +37,7 @@ def get_random_question(request):
         )
 
     try:
-        question = get_random_question_service(category_name, difficulty)
+        questions = get_random_questions_service(category_name, difficulty, count=count)
     except ValidationError as e:
         return Response({"error": str(e)}, status=400)
     except Question.DoesNotExist as e:
@@ -44,5 +45,5 @@ def get_random_question(request):
     except Exception as e:
         return Response({"error": str(e)}, status=500)
 
-    serializer = QuestionSerializer(question)
+    serializer = QuestionSerializer(questions, many=True)
     return Response(serializer.data)

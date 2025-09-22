@@ -18,9 +18,7 @@ def validate_difficulty(difficulty: str) -> None:
 
 
 def get_questions_queryset(category_name: str, difficulty: str) -> QuerySet[Question]:
-    """
-    Build the queryset for questions based on category and difficulty.
-    """
+
     validate_difficulty(difficulty)
 
     filters = {"category__name__iexact": category_name}
@@ -34,17 +32,24 @@ def get_question_by_id_service(pk: int) -> Question:
     return Question.objects.get(pk=pk)
 
 
-def get_random_question_service(category_name: str, difficulty: str) -> Question:
+def get_random_questions_service(category_name: str, difficulty: str, count: int = 1) -> list[Question]:
     if not category_name:
         raise ValidationError("Missing required parameter: category")
     if not difficulty:
         raise ValidationError("Missing required parameter: difficulty")
+    if count is None or int(count) < 1:
+        raise ValidationError("'count' must be a positive integer")
 
     qs = get_questions_queryset(category_name, difficulty)
-    if not qs.exists():
-        # Raise DoesNotExist to keep familiar semantics for callers
+    total = qs.count()
+
+    if total == 0:
         raise Question.DoesNotExist(
             f"No questions found for category: {category_name} and difficulty: {difficulty}"
         )
 
-    return random.choice(list(qs))
+    # Ensure we don't request more than available; sample without replacement
+    k = min(int(count), total)
+    # Convert to list once to avoid multiple DB hits and to use random.sample
+    questions_list = list(qs)
+    return random.sample(questions_list, k)
