@@ -7,6 +7,7 @@ from .services import (
     get_question_by_id_service,
     get_random_questions_service,
     VALID_DIFFICULTIES,
+    create_question_service,
 )
 from questions.models import Question
 
@@ -47,3 +48,22 @@ def get_random_question(request):
 
     serializer = QuestionSerializer(questions, many=True)
     return Response(serializer.data)
+
+
+@api_view(["POST"])
+def create_question(request):
+
+    data = request.data.copy()
+
+    if hasattr(request, "FILES") and request.FILES.get("photo"):
+        data["photo"] = request.FILES.get("photo")
+
+    try:
+        question = create_question_service(data)
+    except ValidationError as e:
+        return Response({"error": str(e)}, status=400)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+    serializer = QuestionSerializer(question)
+    return Response(serializer.data, status=201)
