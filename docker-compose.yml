@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15
@@ -16,28 +14,94 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$DB_USER -d $$DB_NAME"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 5
     command: >
-      postgres
-      -c log_statement=all
-      -c log_destination=stderr
-      -c shared_preload_libraries=pg_stat_statements
+      postgres 
+      -c max_connections=20
+      -c shared_buffers=64MB
+      -c effective_cache_size=256MB
+      -c work_mem=2MB
+    networks:
+      - django_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: raspi_redis  
+    restart: unless-stopped
+    networks:
+      - django_network
+    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
 
 
   web:
     build: .
-    depends_on:
-      db:
-        condition: service_healthy
+    container_name: raspi_web
+    restart: unless-stopped
+    environment:
+      - DJANGO_SETTINGS_MODULE=quizzleef.settings
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+      # Keep DATABASE_URL if other libs rely on it, but Django settings.py won’t use it:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - GUNICORN_CMD_ARGS=--bind=0.0.0.0:8000
     volumes:
-      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+    networks:
+      - django_network
+    command: >
+      sh -c "until pg_isready -h $DB_HOST -p ${DB_PORT:-5432} -U $DB_USER; do
+              echo 'Waiting for Postgres...'; sleep 1;
+            done &&
+            python manage.py collectstatic --noinput &&
+            python manage.py migrate &&
+            python manage.py createsuperuser --noinput \
+              --username \"$DJANGO_SUPERUSER_USERNAME\" \
+              --email \"$DJANGO_SUPERUSER_EMAIL\" || true &&
+            exec gunicorn -b 0.0.0.0:8000 quizzleef.wsgi:application
+            --workers 2
+            --worker-class gthread
+            --threads 2
+            --max-requests 1000
+            --max-requests-jitter 100
+            --timeout 30
+            --keep-alive 2"
+
+  nginx:
+    image: nginx:alpine
+    container_name: raspi_nginx
+    restart: unless-stopped
     ports:
-      - "8000:8000"
-    env_file:
-      - .env
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/quizzleef.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - web
+    networks:
+      - django_network
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  django_network:
+    driver: bridge
