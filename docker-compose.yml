@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:15
-    container_name: my_postgres_db
+    container_name: quizzleef_db
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
@@ -29,7 +29,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: raspi_redis  
+    container_name: quizzleef_redis  
     restart: unless-stopped
     networks:
       - django_network
@@ -38,7 +38,7 @@ services:
 
   web:
     build: .
-    container_name: raspi_web
+    container_name: quizzleef_web
     restart: unless-stopped
     environment:
       - DJANGO_SETTINGS_MODULE=quizzleef.settings
@@ -83,11 +83,10 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: raspi_nginx
+    container_name: quizzleef_nginx
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - ./nginx/quizzleef.conf:/etc/nginx/nginx.conf
       - static_volume:/app/staticfiles
