@@ -6,21 +6,14 @@ services:
     container_name: my_postgres_db
     restart: always
     environment:
-      # Usuario superadmin (siempre existe)
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      
-      # Base de datos que se crea automáticamente
       POSTGRES_DB: ${DB_NAME}
-      
-      # Configuraciones adicionales
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
     ports:
       - "5432:5432"
     volumes:
-      # Persistencia de datos
       - postgres_data:/var/lib/postgresql/data
-      # Script de inicialización personalizado (opcional)
       - ./init-scripts:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$DB_USER -d $$DB_NAME"]
