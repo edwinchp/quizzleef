@@ -15,6 +15,11 @@ from pathlib import Path
 
 from django.contrib import staticfiles
 
+# Helper to read comma-separated environment variables as lists
+def _csv_env(name: str, default: str = ""):
+    value = os.getenv(name, default)
+    return [item.strip() for item in value.split(",") if item.strip()]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +33,10 @@ SECRET_KEY = 'django-insecure-lqhls(+-i=a%r1$$1j(l5@@s*jamqdx1d4kd+i(nd%&ww7(jbw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = _csv_env("DJANGO_ALLOWED_HOSTS", "")
+
+# Configure CSRF trusted origins via environment variable. Values must include scheme, e.g.:
+CSRF_TRUSTED_ORIGINS = _csv_env("CSRF_TRUSTED_ORIGINS", "")
 
 
 # Application definition

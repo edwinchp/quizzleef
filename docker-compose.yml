@@ -43,6 +43,7 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=quizzleef.settings
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
       - DB_HOST=db
       - DB_PORT=5432
       - DB_NAME=${DB_NAME}
@@ -86,7 +87,7 @@ services:
     container_name: quizzleef_nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8012:80"
     volumes:
       - ./nginx/quizzleef.conf:/etc/nginx/nginx.conf
       - static_volume:/app/staticfiles
