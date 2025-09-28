@@ -7,13 +7,20 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.firefox import GeckoDriverManager
 from datetime import datetime
+from pathlib import Path
+from dotenv import load_dotenv
+
+_TESTS_ENV = Path(__file__).resolve().parent / ".env"
+if _TESTS_ENV.exists():
+    load_dotenv(dotenv_path=_TESTS_ENV, override=False)
 
 
 @pytest.fixture()
-def creds():
+def test_data():
     return {
         "username": os.getenv("TEST_USERNAME", ""),
         "password": os.getenv("TEST_PASSWORD", ""),
+        "base_url": os.getenv("TEST_BASE_URL", "http://localhost:8012"),
     }
 
 @pytest.fixture()
