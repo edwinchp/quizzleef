@@ -177,3 +177,5 @@ cython_debug/
 
 .idea
 staticfiles/questions/pictures/
+reports
+.DS_Store
