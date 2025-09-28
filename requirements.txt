@@ -5,7 +5,3 @@ gunicorn
 psycopg2-binary
 whitenoise
 django-environ
-selenium
-pytest
-pytest-html
-webdriver-manager

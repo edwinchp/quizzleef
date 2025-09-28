@@ -41,9 +41,6 @@ Install requirements
 ```bash
 pip install -r requirements.txt
 ```
-```bash
-pip install -r requirements-dev.txt
-```
 
 Run Migrations
 ```bash
@@ -99,3 +96,20 @@ docker compose down -v
 Notes:
 - Change the database, user and password in `.env` according to your preferences.
 - The `pgdata` volume persists the database data between restarts.
+
+
+## Tests
+1) Copy example environment variables and edit them
+```bash
+cp tests/.env_example tests/.env
+```
+
+2) Install Dev Requirements
+```bash
+pip install -r requirements-dev.txt
+```
+
+3) Run tests
+```bash
+pytest -m login --html=reports/report.html
+```
