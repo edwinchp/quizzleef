@@ -1,6 +1,8 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
 from django.core.exceptions import ValidationError
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+import json
 
 from quizzleef.serializers import QuestionSerializer
 from .services import (
@@ -55,8 +57,21 @@ def create_question(request):
 
     data = request.data.copy()
 
-    if hasattr(request, "FILES") and request.FILES.get("photo"):
-        data["photo"] = request.FILES.get("photo")
+    if "metadata" in data:
+        raw = data.get("metadata")
+        try:
+            if isinstance(raw, dict):
+                metadata = raw
+            elif isinstance(raw, bytes):
+                metadata = json.loads(raw.decode("utf-8"))
+            elif isinstance(raw, str):
+                metadata = json.loads(raw)
+            else:
+                raise ValueError("Unsupported metadata type: {}".format(type(raw)))
+        except Exception as e:
+            return Response({"error": f"Invalid metadata JSON: {str(e)}"}, status=400)
+        # merge metadata into data (metadata fields override top-level ones)
+        data.update(metadata)
 
     try:
         question = create_question_service(data)
