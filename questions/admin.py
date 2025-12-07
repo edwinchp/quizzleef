@@ -4,7 +4,7 @@ from django.urls import path
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from questions.models import Question, Option, Message, Category
+from questions.models import Question, Option, Message, Category, CodeSnippet
 
 # Register your models here.
 
@@ -19,12 +19,21 @@ class MessageInline(admin.TabularInline):
     extra = 1
     classes = ('collapse',)
 
+
+
+class CodeSnippetInline(admin.StackedInline):
+    model = CodeSnippet
+    extra = 0
+    max_num = 1
+    classes = ('collapse',)
+
+
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
     list_display = ['question_text']
     list_filter = ['category']
     search_fields = ['question_text']
-    inlines = [OptionInline, MessageInline]
+    inlines = [OptionInline, MessageInline, CodeSnippetInline]
     change_form_template = 'admin/change_form_with_clone.html'
     
     def get_urls(self):
@@ -69,3 +78,4 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(CodeSnippet)

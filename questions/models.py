@@ -37,3 +37,12 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{self.message_text}"
+
+class CodeSnippet(models.Model):
+    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name="code_snippet")
+    title = models.CharField(max_length=100)
+    content = models.TextField(help_text="Paste your source code here")
+    language = models.CharField(max_length=50, default='java')
+
+    def __str__(self):
+        return self.title
