@@ -6,7 +6,7 @@ from django.db.models import QuerySet
 from django.db import transaction
 
 from questions.models import Question
-from questions.models import Category, Option, Message
+from questions.models import Category, Option, Message, CodeSnippet
 
 
 VALID_DIFFICULTIES = ["easy", "medium", "hard", "any"]
@@ -126,5 +126,37 @@ def create_question_service(data: dict) -> Question:
         msg_objs.append(Message(question=question, message_text=text))
     if msg_objs:
         Message.objects.bulk_create(msg_objs)
+
+
+    # Optionally create a related CodeSnippet
+    snippet_payload = None
+    if isinstance(data.get("code_snippet"), dict):
+        snippet_payload = data.get("code_snippet") or {}
+    else:
+        # Support flat fields as an alternative
+        flat_title = data.get("code_snippet_title")
+        flat_content = data.get("code_snippet_content")
+        flat_language = data.get("code_snippet_language")
+        if any(v is not None for v in [flat_title, flat_content, flat_language]):
+            snippet_payload = {
+                "title": flat_title,
+                "content": flat_content,
+                "language": flat_language,
+            }
+
+    if snippet_payload is not None:
+        title = (snippet_payload.get("title") or "").strip()
+        content = snippet_payload.get("content")
+        language = (snippet_payload.get("language") or "java").strip() or "java"
+        if not title:
+            raise ValidationError("'code_snippet.title' is required when providing a code snippet")
+        if content is None or str(content).strip() == "":
+            raise ValidationError("'code_snippet.content' is required when providing a code snippet")
+        CodeSnippet.objects.create(
+            question=question,
+            title=title,
+            content=content,
+            language=language,
+        )
 
     return question
