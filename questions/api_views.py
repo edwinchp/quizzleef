@@ -82,3 +82,54 @@ def create_question(request):
 
     serializer = QuestionSerializer(question)
     return Response(serializer.data, status=201)
+
+@api_view(["POST"])
+def create_questions_bulk(request):
+    payload = request.data
+    # Accept either a list of question dicts or an object with an 'items' list
+    if isinstance(payload, list):
+        items = payload
+    elif isinstance(payload, dict) and isinstance(payload.get('items'), list):
+        items = payload.get('items')
+    else:
+        return Response({
+            'error': "Expected a list of question objects or an object with 'items' as a list"
+        }, status=400)
+
+    results = []
+    success = 0
+    errors = 0
+
+    for idx, item in enumerate(items):
+        data = dict(item or {})
+        # Support per-item metadata merge similar to single create endpoint
+        if 'metadata' in data:
+            raw = data.get('metadata')
+            try:
+                if isinstance(raw, dict):
+                    metadata = raw
+                elif isinstance(raw, bytes):
+                    metadata = json.loads(raw.decode('utf-8'))
+                elif isinstance(raw, str):
+                    metadata = json.loads(raw)
+                else:
+                    raise ValueError(f"Unsupported metadata type: {type(raw)}")
+            except Exception as e:
+                results.append({'index': idx, 'error': f'Invalid metadata JSON: {str(e)}'})
+                errors += 1
+                continue
+            data.update(metadata)
+
+        try:
+            question = create_question_service(data)
+            results.append({'index': idx, 'data': QuestionSerializer(question).data})
+            success += 1
+        except ValidationError as e:
+            results.append({'index': idx, 'error': str(e)})
+            errors += 1
+        except Exception as e:
+            results.append({'index': idx, 'error': str(e)})
+            errors += 1
+
+    status_code = 201 if errors == 0 else 207
+    return Response({'success': success, 'errors': errors, 'results': results}, status=status_code)

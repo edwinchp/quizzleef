@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import QuestionListView, QuestionViewForm
-from .api_views import get_question_by_id, get_random_question, create_question
+from .api_views import get_question_by_id, get_random_question, create_question, create_questions_bulk
 
 
 urlpatterns = [
@@ -10,4 +10,6 @@ urlpatterns = [
     path('api/random-question/', get_random_question,
          name='get_random_question'),
     path('api/questions/', create_question, name='create_question'),
+    path('api/questions/bulk/', create_questions_bulk, name='create_questions_bulk'),
+
 ]
