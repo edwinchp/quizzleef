@@ -30,7 +30,7 @@ class CodeSnippetInline(admin.StackedInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
-    list_display = ['question_text']
+    list_display = ['question_text', 'ready']
     list_filter = ['category']
     search_fields = ['question_text']
     inlines = [OptionInline, MessageInline, CodeSnippetInline]
