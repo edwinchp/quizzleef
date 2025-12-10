@@ -23,7 +23,7 @@ def get_questions_queryset(category_name: str, difficulty: str) -> QuerySet[Ques
 
     validate_difficulty(difficulty)
 
-    filters = {"category__name__iexact": category_name}
+    filters = {"category__name__iexact": category_name, "ready": True}
     if difficulty != "any":
         filters["difficulty"] = difficulty
 

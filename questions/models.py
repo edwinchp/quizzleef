@@ -17,6 +17,7 @@ class Question(models.Model):
     difficulty = models.CharField(max_length=10, choices=[('easy', 'Easy'), ('medium', 'Medium'), ('hard', 'Hard')], default='easy', help_text="Select difficulty level")
     hint = models.TextField(blank=True, null=True, help_text="Hint for the question")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    ready = models.BooleanField(default=False)
 
     def __str__(self):
         return self.question_text
