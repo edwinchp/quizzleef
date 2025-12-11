@@ -4,21 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <title>Document</title>
+    <title>Quizzleef - Take the learning with you</title>
 </head>
-<body>
-    
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-[120px_1fr] lg:gap-8">
-        <div class="h-32 rounded-lg">
-            
-        </div>
-        <div class="h-32 rounded-lg px-4">
-            <div class="container mx-auto px-4">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-      </div>
-    
+<body class="bg-white">
+  <div class="min-h-screen">
+    <main class="w-full">
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
 </body>
 </html>
