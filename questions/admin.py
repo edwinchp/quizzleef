@@ -79,3 +79,8 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(CodeSnippet)
+
+# Global admin branding
+admin.site.site_header = "Quizzleef Administration"
+admin.site.site_title = "Quizzleef Admin"
+admin.site.index_title = "Manage Questions and Content"
