@@ -30,9 +30,9 @@ class CodeSnippetInline(admin.StackedInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
-    list_display = ['question_text', 'ready']
+    list_display = ['title', 'question_text', 'ready']
     list_filter = ['category']
-    search_fields = ['question_text']
+    search_fields = ['title', 'question_text']
     inlines = [OptionInline, MessageInline, CodeSnippetInline]
     change_form_template = 'admin/change_form_with_clone.html'
     

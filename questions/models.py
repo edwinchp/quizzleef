@@ -9,6 +9,7 @@ class Category(models.Model):
 
 class Question(models.Model):
         
+    title = models.CharField(max_length=100)
     question_text = models.TextField(max_length=300, help_text="Max characters: 300")
     short_explanation = models.TextField(max_length=200, blank=True, null=True, help_text="Max characters: 200")
     photo = models.FileField(null=True, upload_to='questions/pictures', blank=True)

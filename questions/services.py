@@ -92,8 +92,14 @@ def create_question_service(data: dict) -> Question:
     photo_spoiler = data.get("photo_spoiler")
     hint = data.get("hint")
 
+    # Mandatory title
+    title = (data.get("title") or "").strip()
+    if not title:
+        raise ValidationError("'title' is required")
+
     # Create the question
     question = Question.objects.create(
+        title=title,
         question_text=question_text,
         category=category,
         difficulty=difficulty or Question._meta.get_field("difficulty").get_default(),
