@@ -28,3 +28,20 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = ['id', 'title', 'question_text', 'short_explanation', 'photo', 'photo_caption', 
                  'photo_spoiler', 'difficulty', 'hint', 'category', 'ready', 'options', 'code_snippet', 'messages']
+
+
+class QuestionCreateSerializer(serializers.Serializer):
+    title = serializers.CharField(help_text="Question title (required)")
+    question_text = serializers.CharField(help_text="Question text (required)")
+    short_explanation = serializers.CharField(required=False, allow_blank=True)
+    photo = serializers.CharField(required=False, allow_blank=True, help_text="Photo file name or URL")
+    photo_caption = serializers.CharField(required=False, allow_blank=True)
+    photo_spoiler = serializers.BooleanField(required=False)
+    difficulty = serializers.ChoiceField(choices=["easy", "medium", "hard"], required=False)
+    hint = serializers.CharField(required=False, allow_blank=True)
+    category_name = serializers.CharField(required=False, help_text="Category name (case-insensitive)")
+    category_id = serializers.IntegerField(required=False, help_text="Alternative to category_name")
+    ready = serializers.BooleanField(required=False)
+    options = OptionSerializer(many=True, required=False)
+    messages = MessageSerializer(many=True, required=False)
+    code_snippet = CodeSnippetSerializer(required=False)
